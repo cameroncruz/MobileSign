@@ -1,8 +1,8 @@
-import math
 import os
+import math
 
 
-def foo():
+def Foo():
     foovar = "foovar"
 
 
