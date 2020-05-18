@@ -2,8 +2,7 @@ import math
 import os
 
 
-def foo():
+def Foo():
     foovar = "foovar"
-
 
     foovar = "foovar"
