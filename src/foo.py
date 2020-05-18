@@ -3,7 +3,7 @@ import math
 
 
 def foo():
-    foovar = "foovarr"
+    foovar = "foovar"
 
 
-    foovar = "foovarr"
+    foovar = "foovar"
