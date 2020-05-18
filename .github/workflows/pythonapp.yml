@@ -1,4 +1,4 @@
-# This workflow will install Python dependencies from a conda YAML, lint with isort, black, and flake8, and run pytest
+# This workflow will install Python dependencies from a conda YAML and run tests with pytest
 
 name: Python application
 
@@ -23,8 +23,6 @@ jobs:
 #         condarc-file: etc/example-condarc.yml
 #         auto-activate-base: false
 
-#     - name: Python style check
-#       uses: bulv1ne/python-style-check@v0.3
 #     - name: Test with pytest
 #       run: |
 #         pytest
