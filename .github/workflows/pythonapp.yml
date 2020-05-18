@@ -23,8 +23,8 @@ jobs:
 #         condarc-file: etc/example-condarc.yml
 #         auto-activate-base: false
 
-    - name: Python style check
-      uses: bulv1ne/python-style-check@v0.3
+#     - name: Python style check
+#       uses: bulv1ne/python-style-check@v0.3
 #     - name: Test with pytest
 #       run: |
 #         pytest
