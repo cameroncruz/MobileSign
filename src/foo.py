@@ -1,9 +1,9 @@
-import os
 import math
+import os
 
 
 def foo():
-    foovar = "foovarr"
+    foovar = "foovar"
 
 
-    foovar = "foovarr"
+    foovar = "foovar"
