@@ -9,7 +9,7 @@ st.title("Explore Data")
 
 st.header("CSV Info")
 
-phoenix_df = pd.read_csv(DATA_ROOT + "annotations/manual/dev.corpus.csv", delimiter='|')
+phoenix_df = pd.read_csv(DATA_ROOT + "annotations/manual/dev.corpus.csv", delimiter="|")
 phoenix_df = phoenix_df.head(5)
 
 st.write(phoenix_df)
