@@ -1,6 +1,7 @@
-import streamlit as st
-import pandas as pd
 from glob import glob
+
+import pandas as pd
+import streamlit as st
 
 DATA_ROOT = "../debug_data/phoenix-2014-multisigner/"
 
