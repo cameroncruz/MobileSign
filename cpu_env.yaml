@@ -15,3 +15,4 @@ dependencies:
   - pip
   - pip:
       - streamlit
+      - tensorflow==2.2
