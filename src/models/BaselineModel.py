@@ -1,7 +1,7 @@
 import tensorflow as tf
-from encoders.VideoEncoder import VideoEncoder
-from encoders.TemporalEncoder import TemporalEncoder
 from decoders.Decoder import Decoder
+from encoders.TemporalEncoder import TemporalEncoder
+from encoders.VideoEncoder import VideoEncoder
 
 
 class BaselineModel(tf.keras.Model):
