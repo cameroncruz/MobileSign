@@ -24,6 +24,7 @@ jobs:
     - uses: goanpeca/setup-miniconda@1.x
       with:
         activate-environment: mobilesign_cpu
+        conda-version: 4.8.3
         python-version: 3.7
         channel-priority: strict
         environment-file: cpu_env.yaml
