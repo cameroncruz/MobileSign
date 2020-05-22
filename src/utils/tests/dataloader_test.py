@@ -14,6 +14,9 @@ class DataloaderTest(tf.test.TestCase):
         self.num_frames = 215
 
     def testReadFrames(self):
+        if not os.path.isdir(self.features_path):
+            self.skipTest(reason="Debug data not found.")
+
         expected_shape = (self.num_frames, 224, 224, 3)
         frames, n_frames = read_frames(features_path=self.features_path, folder=self.folder)
 
@@ -21,6 +24,9 @@ class DataloaderTest(tf.test.TestCase):
         self.assertEqual(frames.shape, expected_shape)
 
     def testReadAndResizeImg(self):
+        if not os.path.isdir(self.features_path):
+            self.skipTest(reason="Debug data not found.")
+
         img_path = self.features_path + self.folder[:-5] + "01April_2010_Thursday_heute.avi_pid0_fn000000-0.png"
         expected_shape = (224, 224, 3)
         img = read_and_resize_img(img_path)
@@ -28,6 +34,9 @@ class DataloaderTest(tf.test.TestCase):
         self.assertEqual(img.shape, expected_shape)
 
     def testParseExample(self):
+        if not os.path.isdir(self.features_path):
+            self.skipTest(reason="Debug data not found.")
+
         parse_example = create_parse_fn(self.features_path)
         frames, label = parse_example(self.id, self.folder, self.signer, self.annotation)
 
@@ -39,7 +48,7 @@ class DataloaderTest(tf.test.TestCase):
         default_types = [tf.string, tf.string, tf.string, tf.string]
 
         if not os.path.isfile(csv_path):
-            self.skipTest(reason="Debug csv file not found.")
+            self.skipTest(reason="Debug data not found.")
 
         dataset = tf.data.experimental.CsvDataset(filenames=csv_path,  record_defaults=default_types, field_delim="|", header=True)
         dataset.map(create_parse_fn(self.features_path))
