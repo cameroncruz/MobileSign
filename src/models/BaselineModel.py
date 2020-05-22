@@ -5,10 +5,16 @@ from decoders.Decoder import Decoder
 
 
 class BaselineModel(tf.keras.Model):
-    def __init__(self, window_size, temporal_stride, embedding_dim, hidden_size, vocab_size):
+    def __init__(
+        self, window_size, temporal_stride, embedding_dim, hidden_size, vocab_size
+    ):
         super(BaselineModel, self).__init__()
 
-        self.video_encoder = VideoEncoder(window_size=window_size, temporal_stride=temporal_stride, embedding_dim=embedding_dim)
+        self.video_encoder = VideoEncoder(
+            window_size=window_size,
+            temporal_stride=temporal_stride,
+            embedding_dim=embedding_dim,
+        )
         self.temporal_encoder = TemporalEncoder(hidden_size=hidden_size)
         self.decoder = Decoder(hidden_size=hidden_size, vocab_size=vocab_size)
 
