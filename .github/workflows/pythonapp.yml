@@ -22,5 +22,5 @@ jobs:
         auto-activate-base: false
 
     - name: Test with pytest
-      run: |
-        pytest
+      shell: bash -l {0}
+      run: pytest
