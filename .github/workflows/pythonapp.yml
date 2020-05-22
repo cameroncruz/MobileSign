@@ -23,7 +23,7 @@ jobs:
         key: ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{ hashFiles('cpu_env.yaml') }}
     - uses: goanpeca/setup-miniconda@1.x
       with:
-        activate-environment: mobilesign-cpu
+        activate-environment: mobilesign_cpu
         python-version: 3.7
         channel-priority: strict
         environment-file: cpu_env.yaml
