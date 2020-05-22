@@ -10,19 +10,17 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
-#     - uses: goanpeca/setup-miniconda@v1
-#       with:
-#         activate-environment: anaconda-client-env
-#         environment-file: etc/example-environment.yml
-#         python-version: 3.5
+    - uses: goanpeca/setup-miniconda@v1
+      with:
+        activate-environment: mobilesign_cpu
+        environment-file: cpu_env.yaml
+        python-version: 3.7
 #         condarc-file: etc/example-condarc.yml
-#         auto-activate-base: false
+        auto-activate-base: false
 
-#     - name: Test with pytest
-#       run: |
-#         pytest
+    - name: Test with pytest
+      run: |
+        pytest
