@@ -1,4 +1,4 @@
-name: mobilesign-cpu
+name: mobilesign_cpu
 channels:
   - conda-forge
 dependencies:
