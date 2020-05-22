@@ -5,13 +5,11 @@ dependencies:
   - python=3.7
   - pandas
   - numpy
-  - scipy
-  - opencv
-  - altair
   - scikit-learn
   - tqdm
-  - matplotlib
   - awscli
+  - pytest
   - pip
   - pip:
       - streamlit
+      - tensorflow==2.2
