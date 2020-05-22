@@ -12,6 +12,7 @@ dependencies:
   - tqdm
   - matplotlib
   - awscli
+  - pytest
   - pip
   - pip:
       - streamlit

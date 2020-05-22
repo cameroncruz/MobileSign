@@ -19,6 +19,6 @@ class BaselineModel(tf.keras.Model):
 
 
 if __name__ == "__main__":
-    model = BaselineModel()
+    model = BaselineModel(8, 4, 100, 1024, 1000)
     model(tf.zeros((4, 16, 224, 224, 3)))
     model.summary()
