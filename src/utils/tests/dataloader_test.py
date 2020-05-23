@@ -1,7 +1,12 @@
 import tensorflow as tf
 import os
 import json
-from utils.dataloader import create_parse_fn, read_frames, read_and_resize_img, create_tokenize_fn
+from utils.dataloader import (
+    create_parse_fn,
+    read_frames,
+    read_and_resize_img,
+    create_tokenize_fn,
+)
 
 
 class DataloaderTest(tf.test.TestCase):
@@ -12,7 +17,9 @@ class DataloaderTest(tf.test.TestCase):
         self.id = "01April_2010_Thursday_heute_default-1"
         self.folder = "01April_2010_Thursday_heute_default-1/1/*.png"
         self.signer = "Signer04"
-        self.annotation = "ICH OSTERN WETTER ZUFRIEDEN MITTAG TEMPERATUR  SUED WARM MEIN NICHT"
+        self.annotation = (
+            "ICH OSTERN WETTER ZUFRIEDEN MITTAG TEMPERATUR  SUED WARM MEIN NICHT"
+        )
         self.tokenized_annotation = [2, 254, 479, 31, 641, 93, 73, 22, 82, 490, 80, 3]
         self.num_frames = 215
 
@@ -21,7 +28,9 @@ class DataloaderTest(tf.test.TestCase):
             self.skipTest(reason="Debug data not found.")
 
         expected_shape = (self.num_frames, 224, 224, 3)
-        frames, n_frames = read_frames(features_path=self.features_path, folder=self.folder)
+        frames, n_frames = read_frames(
+            features_path=self.features_path, folder=self.folder
+        )
 
         self.assertEqual(n_frames, self.num_frames)
         self.assertEqual(frames.shape, expected_shape)
@@ -30,7 +39,11 @@ class DataloaderTest(tf.test.TestCase):
         if not os.path.isdir(self.features_path):
             self.skipTest(reason="Debug data not found.")
 
-        img_path = self.features_path + self.folder[:-5] + "01April_2010_Thursday_heute.avi_pid0_fn000000-0.png"
+        img_path = (
+            self.features_path
+            + self.folder[:-5]
+            + "01April_2010_Thursday_heute.avi_pid0_fn000000-0.png"
+        )
         expected_shape = (224, 224, 3)
         img = read_and_resize_img(img_path)
 
@@ -50,7 +63,9 @@ class DataloaderTest(tf.test.TestCase):
             self.skipTest(reason="Debug data not found.")
 
         parse_example = create_parse_fn(self.features_path, self.vocab_file)
-        frames, label = parse_example(self.id, self.folder, self.signer, self.annotation)
+        frames, label = parse_example(
+            self.id, self.folder, self.signer, self.annotation
+        )
 
         self.assertEqual(frames.shape, (self.num_frames, 224, 224, 3))
         self.assertAllEqual(label, self.tokenized_annotation)
@@ -62,5 +77,10 @@ class DataloaderTest(tf.test.TestCase):
         if not os.path.isfile(csv_path):
             self.skipTest(reason="Debug data not found.")
 
-        dataset = tf.data.experimental.CsvDataset(filenames=csv_path,  record_defaults=default_types, field_delim="|", header=True)
+        dataset = tf.data.experimental.CsvDataset(
+            filenames=csv_path,
+            record_defaults=default_types,
+            field_delim="|",
+            header=True,
+        )
         dataset = dataset.map(create_parse_fn(self.features_path, self.vocab_file))
