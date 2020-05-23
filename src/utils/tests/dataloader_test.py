@@ -47,6 +47,9 @@ class DataloaderTest(tf.test.TestCase):
         self.assertEqual(img.shape, expected_shape)
 
     def testCreateTokenizeFn(self):
+        if not os.path.isfile(self.vocab_file):
+            self.skipTest(reason="Debug data not found.")
+
         with open(self.vocab_file) as f:
             tokenizer = tf.keras.preprocessing.text.tokenizer_from_json(json.load(f))
 
