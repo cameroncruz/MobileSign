@@ -20,7 +20,7 @@ def create_parse_fn(features_path: str, vocab_file: str) -> Callable:
         tokenizer = tf.keras.preprocessing.text.tokenizer_from_json(json.load(f))
 
     def parse_example(
-        id: str, folder: str, signer: str, annotation: str
+        _id: str, folder: str, signer: str, annotation: str
     ) -> (tf.float32, tf.int32):
         frames, _ = tf.py_function(
             read_frames, [features_path, folder], [tf.float32, tf.int32]
