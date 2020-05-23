@@ -1,12 +1,9 @@
-import tensorflow as tf
-import os
 import json
-from utils.dataloader import (
-    create_parse_fn,
-    read_frames,
-    read_and_resize_img,
-    create_tokenize_fn,
-)
+import os
+
+import tensorflow as tf
+from utils.dataloader import (create_parse_fn, create_tokenize_fn,
+                              read_and_resize_img, read_frames)
 
 
 class DataloaderTest(tf.test.TestCase):

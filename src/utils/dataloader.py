@@ -1,6 +1,7 @@
-import tensorflow as tf
 import json
 from typing import Callable
+
+import tensorflow as tf
 
 
 def create_parse_fn(features_path: str, vocab_file: str) -> Callable:
