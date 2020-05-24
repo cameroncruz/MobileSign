@@ -2,6 +2,7 @@ import tensorflow as tf
 import os
 from utils.dataloader import create_parse_fn
 from models.BaselineModel import BaselineModel
+from utils.metrics import WER
 
 
 class BaselineModelTest(tf.test.TestCase):
@@ -32,6 +33,7 @@ class BaselineModelTest(tf.test.TestCase):
         dataset = dataset.padded_batch(2, padded_shapes=([None, 224, 224, 3], [None]))
 
         model = BaselineModel(vocab_size=980)
-        model.compile(optimizer='adam', loss=tf.keras.losses.SparseCategoricalCrossentropy())
+        model.compile(optimizer='adam', loss=tf.keras.losses.SparseCategoricalCrossentropy(),
+                      metrics=[WER(), tf.keras.metrics.SparseCategoricalAccuracy()])
         model.fit(dataset, epochs=100)
 

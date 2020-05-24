@@ -28,6 +28,7 @@ class BaselineModel(tf.keras.Model):
         batch_size = targets.shape[0]
 
         loss = 0
+        all_preds = []
 
         memory_state, carry_state = self.decoder.reset_state(batch_size=batch_size)
         decoder_inputs = tf.expand_dims(targets[:, 0], 1)
@@ -42,6 +43,7 @@ class BaselineModel(tf.keras.Model):
                 loss += self.compiled_loss(targets[:, i], preds)
 
                 decoder_inputs = tf.expand_dims(targets[:, i], 1)
+                all_preds.append(preds)
 
         trainable_variables = self.video_encoder.trainable_variables + self.temporal_encoder.trainable_variables + self.decoder.trainable_variables
 
@@ -49,4 +51,7 @@ class BaselineModel(tf.keras.Model):
 
         self.optimizer.apply_gradients(zip(gradients, trainable_variables))
 
-        return {'loss': loss}
+        # Update metrics (includes the metric that tracks the loss)
+        self.compiled_metrics.update_state(targets[:, 1:], tf.stack(all_preds, axis=1))
+        # Return a dict mapping metric names to current value
+        return {m.name: m.result() for m in self.metrics}
