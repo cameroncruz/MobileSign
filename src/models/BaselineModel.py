@@ -6,7 +6,12 @@ from models.encoders.VideoEncoder import VideoEncoder
 
 class BaselineModel(tf.keras.Model):
     def __init__(
-        self, vocab_size, window_size=8, temporal_stride=4, embedding_dim=100, hidden_size=512
+        self,
+        vocab_size,
+        window_size=8,
+        temporal_stride=4,
+        embedding_dim=100,
+        hidden_size=512,
     ):
         super(BaselineModel, self).__init__()
 
@@ -16,7 +21,9 @@ class BaselineModel(tf.keras.Model):
             embedding_dim=embedding_dim,
         )
         self.temporal_encoder = TemporalEncoder(hidden_size=hidden_size)
-        self.decoder = Decoder(hidden_size=hidden_size, vocab_size=vocab_size, embedding_dim=embedding_dim)
+        self.decoder = Decoder(
+            hidden_size=hidden_size, vocab_size=vocab_size, embedding_dim=embedding_dim
+        )
 
     def train_step(self, data):
         frame_features, targets = data
@@ -33,14 +40,20 @@ class BaselineModel(tf.keras.Model):
             clip_encodings = self.temporal_encoder(frame_encodings)
 
             for i in range(1, targets.shape[1]):
-                preds, memory_state, carry_state = self.decoder([decoder_inputs, clip_encodings, memory_state, carry_state])
+                preds, memory_state, carry_state = self.decoder(
+                    [decoder_inputs, clip_encodings, memory_state, carry_state]
+                )
 
                 loss += self.compiled_loss(targets[:, i], preds)
 
                 decoder_inputs = tf.expand_dims(targets[:, i], 1)
                 all_preds.append(preds)
 
-        trainable_variables = self.video_encoder.trainable_variables + self.temporal_encoder.trainable_variables + self.decoder.trainable_variables
+        trainable_variables = (
+            self.video_encoder.trainable_variables
+            + self.temporal_encoder.trainable_variables
+            + self.decoder.trainable_variables
+        )
 
         gradients = tape.gradient(loss, trainable_variables)
 
@@ -65,7 +78,9 @@ class BaselineModel(tf.keras.Model):
         clip_encodings = self.temporal_encoder(frame_encodings)
 
         for i in range(1, targets.shape[1]):
-            preds, memory_state, carry_state = self.decoder([decoder_inputs, clip_encodings, memory_state, carry_state])
+            preds, memory_state, carry_state = self.decoder(
+                [decoder_inputs, clip_encodings, memory_state, carry_state]
+            )
 
             loss += self.compiled_loss(targets[:, i], preds)
 

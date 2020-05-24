@@ -17,7 +17,7 @@ def dense_to_sparse(dense, dtype=tf.int64):
 
 class WER(tf.keras.metrics.Mean):
     def __init__(self):
-        super(WER, self).__init__(name='word_error_rate')
+        super(WER, self).__init__(name="word_error_rate")
 
     def update_state(self, y_true, y_pred, sample_weight=None):
         y_pred = tf.argmax(y_pred, axis=-1)
@@ -25,4 +25,6 @@ class WER(tf.keras.metrics.Mean):
         y_true = tf.cast(y_true, dtype=tf.int64)
         y_true_sparse = dense_to_sparse(y_true)
 
-        return super(WER, self).update_state(tf.edit_distance(y_pred_sparse, y_true_sparse, normalize=True))
+        return super(WER, self).update_state(
+            tf.edit_distance(y_pred_sparse, y_true_sparse, normalize=True)
+        )

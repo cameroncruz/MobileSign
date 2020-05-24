@@ -33,7 +33,9 @@ class BaselineModelTest(tf.test.TestCase):
         dataset = dataset.padded_batch(2, padded_shapes=([None, 224, 224, 3], [None]))
 
         model = BaselineModel(vocab_size=980)
-        model.compile(optimizer='adam', loss=tf.keras.losses.SparseCategoricalCrossentropy(),
-                      metrics=[WER(), tf.keras.metrics.SparseCategoricalAccuracy()])
+        model.compile(
+            optimizer="adam",
+            loss=tf.keras.losses.SparseCategoricalCrossentropy(),
+            metrics=[WER(), tf.keras.metrics.SparseCategoricalAccuracy()],
+        )
         model.fit(dataset, validation_data=dataset, epochs=100)
-
