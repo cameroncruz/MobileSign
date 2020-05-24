@@ -6,11 +6,23 @@ class DecoderTest(tf.test.TestCase):
     def testExpectedOutputShape(self):
         hidden_size = 1024
         vocab_size = 10
-        input_shape = (8, 4, 100)
-        expected_output_shape = (8, 4, vocab_size)
+        embedding_dim = 100
+        batch_size = 8
+        expected_output_shape = (batch_size, vocab_size)
 
-        decoder = Decoder(hidden_size=hidden_size, vocab_size=vocab_size)
+        decoder = Decoder(
+            hidden_size=hidden_size, vocab_size=vocab_size, embedding_dim=embedding_dim
+        )
 
-        output = decoder(tf.ones(input_shape))
+        preds, memory_state, carry_state = decoder(
+            [
+                tf.ones((batch_size, 1)),
+                tf.ones((batch_size, 5, 100)),
+                tf.ones((batch_size, hidden_size)),
+                tf.ones((batch_size, hidden_size)),
+            ]
+        )
 
-        self.assertEqual(output.shape, expected_output_shape)
+        self.assertEqual(preds.shape, expected_output_shape)
+        self.assertEqual(memory_state.shape, (batch_size, hidden_size))
+        self.assertEqual(carry_state.shape, (batch_size, hidden_size))

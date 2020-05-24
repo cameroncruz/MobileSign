@@ -3,7 +3,7 @@ import tensorflow as tf
 
 class VideoEncoder(tf.keras.Model):
     def __init__(self, window_size, temporal_stride, embedding_dim):
-        super(VideoEncoder, self).__init__()
+        super(VideoEncoder, self).__init__(dynamic=True)
 
         self.window_size = window_size
         self.temporal_stride = temporal_stride
@@ -26,7 +26,7 @@ class VideoEncoder(tf.keras.Model):
         return x
 
     def call(self, inputs, training=None, mask=None):
-        batch_size, n_frames, H, W, C = inputs.shape
+        batch_size, n_frames, H, W, C = tf.shape(inputs)
         clip_embeddings = [
             self.embed_clip(inputs[:, i : i + self.window_size, :, :, :])
             for i in range(0, n_frames - self.window_size + 1, self.temporal_stride)
