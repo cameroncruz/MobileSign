@@ -35,5 +35,5 @@ class BaselineModelTest(tf.test.TestCase):
         model = BaselineModel(vocab_size=980)
         model.compile(optimizer='adam', loss=tf.keras.losses.SparseCategoricalCrossentropy(),
                       metrics=[WER(), tf.keras.metrics.SparseCategoricalAccuracy()])
-        model.fit(dataset, epochs=100)
+        model.fit(dataset, validation_data=dataset, epochs=100)
 
