@@ -1,7 +1,8 @@
-import tensorflow as tf
 import os
-from utils.dataloader import create_parse_fn
+
+import tensorflow as tf
 from models.BaselineModel import BaselineModel
+from utils.dataloader import create_parse_fn
 from utils.metrics import WER
 
 
