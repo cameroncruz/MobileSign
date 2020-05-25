@@ -100,3 +100,7 @@ def create_tokenize_fn(
         return tokenized
 
     return tokenize
+
+
+def frame_sampling_fn(frames, label):
+    return frames[:32, :, :, :], label
