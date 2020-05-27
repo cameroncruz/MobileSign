@@ -10,6 +10,7 @@ class PhoenixBaselineTrial(TFKerasTrial):
         super(PhoenixBaselineTrial, self).__init__(context)
 
         self.context = context
+        self.data_config = self.context.get_data_config()
 
     def build_model(self) -> tf.keras.Model:
         model = BaselineModel(vocab_size=self.context.get_hparam("vocab_size"),
@@ -31,12 +32,12 @@ class PhoenixBaselineTrial(TFKerasTrial):
         @self.context.experimental.cache_train_dataset("rwth-phoenix-2014-tfdataset", "v1", shuffle=True)
         def make_dataset() -> tf.data.Dataset:
             dataset = tf.data.experimental.CsvDataset(
-                filenames=train_csv_path,
+                filenames=self.data_config["train_csv"],
                 record_defaults=[tf.string, tf.string, tf.string, tf.string],
                 field_delim="|",
                 header=True,
             )
-            dataset = dataset.map(create_parse_fn(features_path, vocab_file))
+            dataset = dataset.map(create_parse_fn(self.data_config["features_path"] + "train/", self.data_config["vocab_file"]))
             return dataset
 
         train_dataset = make_dataset()
@@ -47,15 +48,15 @@ class PhoenixBaselineTrial(TFKerasTrial):
         return train_dataset
 
     def build_validation_data_loader(self) -> tf.data.Dataset:
-        @self.context.experimental.cache_train_dataset("rwth-phoenix-2014-tfdataset", "v1")
+        @self.context.experimental.cache_validation_dataset("rwth-phoenix-2014-tfdataset", "v1")
         def make_dataset() -> tf.data.Dataset:
             dataset = tf.data.experimental.CsvDataset(
-                filenames=validate_csv_path,
+                filenames=self.data_config["validation_csv"],
                 record_defaults=[tf.string, tf.string, tf.string, tf.string],
                 field_delim="|",
                 header=True,
             )
-            dataset = dataset.map(create_parse_fn(features_path, vocab_file))
+            dataset = dataset.map(create_parse_fn(self.data_config["features_path"] + "dev/", self.data_config["vocab_file"]))
             return dataset
 
         validation_dataset = make_dataset()

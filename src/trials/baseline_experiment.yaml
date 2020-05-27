@@ -1,0 +1,32 @@
+description: phoenix_baseline
+environment:
+  image:
+    gpu: "determinedai/environments:cuda-10.1-pytorch-1.4-tf-2.2-gpu-0.4.0"
+data:
+  train_csv: /mnt/efs/phoenix2014-release/phoenix-2014-multisigner/annotations/manual/train.corpus.csv
+  validation_csv: /mnt/efs/phoenix2014-release/phoenix-2014-multisigner/annotations/manual/dev.corpus.csv
+  features_path: /mnt/efs/phoenix2014-release/phoenix-2014-multisigner/features/fullFrame-210x260px/
+  vocab_file: /mnt/efs/phoenix2014-release/phoenix-tokenizer.json
+bind_mounts:
+  - host_path: /mnt/efs
+    container_path: /mnt/efs
+    read_only: true
+data_layer:
+  type: s3
+  bucket: mobilesign-bucket
+  bucket_directory_path: cache
+hyperparameters:
+  vocab_size: 980
+  window_size: 8
+  temporal_stride: 8
+  embedding_dim: 100
+  hidden_size: 512
+resources:
+  slots_per_trial: 8
+searcher:
+  name: single
+  metric: val_loss
+  smaller_is_better: true
+  max_steps: 50
+min_validation_period: 10
+entrypoint: PhoenixBaselineTrial:PhoenixBaselineTrial
