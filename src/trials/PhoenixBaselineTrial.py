@@ -14,11 +14,13 @@ class PhoenixBaselineTrial(TFKerasTrial):
         self.data_config = self.context.get_data_config()
 
     def build_model(self) -> tf.keras.Model:
-        model = BaselineModel(vocab_size=self.context.get_hparam("vocab_size"),
-                              window_size=self.context.get_hparam("window_size"),
-                              temporal_stride=self.context.get_hparam("temporal_stride"),
-                              embedding_dim=self.context.get_hparam("embedding_dim"),
-                              hidden_size=self.context.get_hparam("hidden_size"))
+        model = BaselineModel(
+            vocab_size=self.context.get_hparam("vocab_size"),
+            window_size=self.context.get_hparam("window_size"),
+            temporal_stride=self.context.get_hparam("temporal_stride"),
+            embedding_dim=self.context.get_hparam("embedding_dim"),
+            hidden_size=self.context.get_hparam("hidden_size"),
+        )
 
         model = self.context.wrap_model(model)
         model.compile(
@@ -30,10 +32,14 @@ class PhoenixBaselineTrial(TFKerasTrial):
         return model
 
     def keras_callbacks(self) -> List[tf.keras.callbacks.Callback]:
-        return [TFKerasTensorBoard(update_freq="batch", profile_batch=0, histogram_freq=1)]
+        return [
+            TFKerasTensorBoard(update_freq="batch", profile_batch=0, histogram_freq=1)
+        ]
 
     def build_training_data_loader(self) -> tf.data.Dataset:
-        @self.context.experimental.cache_train_dataset("rwth-phoenix-2014-tfdataset", "v1", shuffle=True)
+        @self.context.experimental.cache_train_dataset(
+            "rwth-phoenix-2014-tfdataset", "v1", shuffle=True
+        )
         def make_dataset() -> tf.data.Dataset:
             dataset = tf.data.experimental.CsvDataset(
                 filenames=self.data_config["train_csv"],
@@ -41,18 +47,28 @@ class PhoenixBaselineTrial(TFKerasTrial):
                 field_delim="|",
                 header=True,
             )
-            dataset = dataset.map(create_parse_fn(self.data_config["features_path"] + "train/", self.data_config["vocab_file"]))
+            dataset = dataset.map(
+                create_parse_fn(
+                    self.data_config["features_path"] + "train/",
+                    self.data_config["vocab_file"],
+                )
+            )
             return dataset
 
         train_dataset = make_dataset()
 
         train_dataset = train_dataset.map(frame_sampling_fn)
-        train_dataset = train_dataset.padded_batch(self.context.get_per_slot_batch_size(), padded_shapes=([None, 224, 224, 3], [None]))
+        train_dataset = train_dataset.padded_batch(
+            self.context.get_per_slot_batch_size(),
+            padded_shapes=([None, 224, 224, 3], [None]),
+        )
 
         return train_dataset
 
     def build_validation_data_loader(self) -> tf.data.Dataset:
-        @self.context.experimental.cache_validation_dataset("rwth-phoenix-2014-tfdataset", "v1")
+        @self.context.experimental.cache_validation_dataset(
+            "rwth-phoenix-2014-tfdataset", "v1"
+        )
         def make_dataset() -> tf.data.Dataset:
             dataset = tf.data.experimental.CsvDataset(
                 filenames=self.data_config["validation_csv"],
@@ -60,12 +76,20 @@ class PhoenixBaselineTrial(TFKerasTrial):
                 field_delim="|",
                 header=True,
             )
-            dataset = dataset.map(create_parse_fn(self.data_config["features_path"] + "dev/", self.data_config["vocab_file"]))
+            dataset = dataset.map(
+                create_parse_fn(
+                    self.data_config["features_path"] + "dev/",
+                    self.data_config["vocab_file"],
+                )
+            )
             return dataset
 
         validation_dataset = make_dataset()
 
         validation_dataset = validation_dataset.map(frame_sampling_fn)
-        validation_dataset = validation_dataset.padded_batch(self.context.get_per_slot_batch_size(), padded_shapes=([None, 224, 224, 3], [None]))
+        validation_dataset = validation_dataset.padded_batch(
+            self.context.get_per_slot_batch_size(),
+            padded_shapes=([None, 224, 224, 3], [None]),
+        )
 
         return validation_dataset
