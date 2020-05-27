@@ -1,5 +1,6 @@
 import tensorflow as tf
-from determined.keras import TFKerasTrial, TFKerasTrialContext
+from determined.keras import TFKerasTrial, TFKerasTrialContext, TFKerasTensorBoard
+from typing import List
 from models.BaselineModel import BaselineModel
 from utils.dataloader import create_parse_fn, frame_sampling_fn
 from utils.metrics import WER
@@ -27,6 +28,9 @@ class PhoenixBaselineTrial(TFKerasTrial):
         )
 
         return model
+
+    def keras_callbacks(self) -> List[tf.keras.callbacks.Callback]:
+        return [TFKerasTensorBoard(update_freq="batch", profile_batch=0, histogram_freq=1)]
 
     def build_training_data_loader(self) -> tf.data.Dataset:
         @self.context.experimental.cache_train_dataset("rwth-phoenix-2014-tfdataset", "v1", shuffle=True)
