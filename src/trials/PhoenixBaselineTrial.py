@@ -1,6 +1,8 @@
-import tensorflow as tf
-from determined.keras import TFKerasTrial, TFKerasTrialContext, TFKerasTensorBoard
 from typing import List
+
+import tensorflow as tf
+from determined.keras import (TFKerasTensorBoard, TFKerasTrial,
+                              TFKerasTrialContext)
 from models.BaselineModel import BaselineModel
 from utils.dataloader import create_parse_fn, frame_sampling_fn
 from utils.metrics import WER
