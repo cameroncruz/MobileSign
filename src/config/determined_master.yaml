@@ -17,7 +17,7 @@ provisioner:
   image_id: ami-02e0ff379a7391b99
   agent_docker_image: determinedai/determined-agent:0.12.4
   instance_name: determined-agent-mobilesign-cluster
-  instance_type: p2.8xlarge
+  instance_type: p2.xlarge
   log_group: /determined/mobilesign-cluster
   log_stream: determined-agent
   master_url: http://local-ipv4:8080
