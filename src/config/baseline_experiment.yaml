@@ -29,4 +29,4 @@ searcher:
   smaller_is_better: true
   max_steps: 50
 min_validation_period: 10
-entrypoint: PhoenixBaselineTrial:PhoenixBaselineTrial
+entrypoint: :PhoenixBaselineTrial

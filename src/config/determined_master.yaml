@@ -23,7 +23,7 @@ provisioner:
   master_url: http://local-ipv4:8080
   startup_script: /etc/determined/agent_startup.sh
   max_idle_agent_period: 10m
-  max_instances: 5
+  max_instances: 1
   network_interface:
     public_ip: true
     security_group_id: sg-09a21d739fd14a98f
