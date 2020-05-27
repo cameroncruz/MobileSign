@@ -22,8 +22,8 @@ hyperparameters:
   embedding_dim: 100
   hidden_size: 512
 resources:
-  max_slots: 8
-  slots_per_trial: 8
+  max_slots: 4
+  slots_per_trial: 4
 searcher:
   name: single
   metric: val_loss
