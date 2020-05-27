@@ -13,3 +13,6 @@ dependencies:
   - pip:
       - streamlit
       - tensorflow==2.2
+      - determined
+      - determined-cli
+      - determined-deploy

@@ -1,0 +1,24 @@
+docker run \
+                --name determined-master \
+                --network determined \
+                --restart unless-stopped \
+                --log-driver=awslogs \
+                --log-opt awslogs-group=/determined/mobilesign-cluster \
+                --log-opt awslogs-stream=determined-master \
+                -p 8080:8080 \
+                -v /usr/local/determined/etc/master.yaml:/etc/determined/master.yaml \
+                determinedai/determined-master:0.12.4
+
+docker run \
+                --name determined-master \
+                --network determined \
+                --restart unless-stopped \
+                --log-driver=awslogs \
+                --log-opt awslogs-group=/determined/mobilesign-cluster \
+                --log-opt awslogs-stream=determined-master \
+                -p 8080:8080 \
+                -v `pwd`/determined_master.yaml:/etc/determined/master.yaml \
+                -v `pwd`/agent_starttup.sh:/etc/determined/agent_startup.sh \
+                determinedai/determined-master:0.12.4
+
+det experiment create config/baseline_experiment.yaml trials

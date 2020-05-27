@@ -1,0 +1,34 @@
+checkpoint_storage:
+  type: s3
+  bucket: det-mobilesign-cluster-us-west-2-118046488476
+  save_experiment_best: 0
+  save_trial_best: 1
+  save_trial_latest: 1
+
+db:
+  user: postgres
+  password: "postgres"
+  host: "mobilesign-cluster-database-1jvqqelw83e9h.cluster-c5rjoh2ul8ta.us-west-2.rds.amazonaws.com"
+  port: 5432
+  name: determined
+
+provisioner:
+  iam_instance_profile_arn: arn:aws:iam::118046488476:instance-profile/mobilesign-cluster-AgentInstanceProfile-18BPA3R6PRRF1
+  image_id: ami-02e0ff379a7391b99
+  agent_docker_image: determinedai/determined-agent:0.12.4
+  instance_name: determined-agent-mobilesign-cluster
+  instance_type: p2.xlarge
+  log_group: /determined/mobilesign-cluster
+  log_stream: determined-agent
+  master_url: http://local-ipv4:8080
+  startup_script: /etc/determined/agent_startup.sh
+  max_idle_agent_period: 10m
+  max_instances: 1
+  network_interface:
+    public_ip: true
+    security_group_id: sg-09a21d739fd14a98f
+  provider: aws
+  root_volume_size: 200
+  ssh_key_name: Cameron's MacBook Pro
+  tag_key: det-mobilesign-cluster
+  tag_value: det-agent-mobilesign-cluster
