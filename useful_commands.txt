@@ -20,4 +20,4 @@ docker run \
                 -v `pwd`/determined_master.yaml:/etc/determined/master.yaml \
                 determinedai/determined-master:0.12.4
 
-det experiment create config/baseline_experiment.yaml trials
+det experiment create config/baseline_experiment.yaml .

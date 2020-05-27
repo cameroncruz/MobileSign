@@ -16,6 +16,7 @@ data_layer:
   bucket: mobilesign-bucket
   bucket_directory_path: cache
 hyperparameters:
+  global_batch_size: 16
   vocab_size: 980
   window_size: 8
   temporal_stride: 8
@@ -30,4 +31,4 @@ searcher:
   smaller_is_better: true
   max_steps: 50
 min_validation_period: 10
-entrypoint: :PhoenixBaselineTrial
+entrypoint: trials.PhoenixBaselineTrial:PhoenixBaselineTrial
