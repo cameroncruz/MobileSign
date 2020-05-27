@@ -22,6 +22,7 @@ hyperparameters:
   embedding_dim: 100
   hidden_size: 512
 resources:
+  max_slots: 8
   slots_per_trial: 8
 searcher:
   name: single

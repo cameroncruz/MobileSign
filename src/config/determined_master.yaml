@@ -17,13 +17,13 @@ provisioner:
   image_id: ami-02e0ff379a7391b99
   agent_docker_image: determinedai/determined-agent:0.12.4
   instance_name: determined-agent-mobilesign-cluster
-  instance_type: p2.xlarge
+  instance_type: p3.8xlarge
   log_group: /determined/mobilesign-cluster
   log_stream: determined-agent
   master_url: http://local-ipv4:8080
   startup_script: /etc/determined/agent_startup.sh
   max_idle_agent_period: 10m
-  max_instances: 1
+  max_instances: 2
   network_interface:
     public_ip: true
     security_group_id: sg-09a21d739fd14a98f
