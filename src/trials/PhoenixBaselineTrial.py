@@ -39,9 +39,9 @@ class PhoenixBaselineTrial(TFKerasTrial):
         ]
 
     def build_training_data_loader(self) -> tf.data.Dataset:
-        @self.context.experimental.cache_train_dataset(
-            "rwth-phoenix-2014-tfdataset", "v1", shuffle=True
-        )
+        # @self.context.experimental.cache_train_dataset(
+        #     "rwth-phoenix-2014-tfdataset", "v1", shuffle=True
+        # )
         def make_dataset() -> tf.data.Dataset:
             dataset = tf.data.experimental.CsvDataset(
                 filenames=self.data_config["train_csv"],
@@ -65,12 +65,12 @@ class PhoenixBaselineTrial(TFKerasTrial):
             padded_shapes=([None, 224, 224, 3], [None]),
         )
 
-        return train_dataset
+        return self.context.wrap_dataset(train_dataset)
 
     def build_validation_data_loader(self) -> tf.data.Dataset:
-        @self.context.experimental.cache_validation_dataset(
-            "rwth-phoenix-2014-tfdataset", "v1"
-        )
+        # @self.context.experimental.cache_validation_dataset(
+        #     "rwth-phoenix-2014-tfdataset", "v1"
+        # )
         def make_dataset() -> tf.data.Dataset:
             dataset = tf.data.experimental.CsvDataset(
                 filenames=self.data_config["validation_csv"],
@@ -94,4 +94,4 @@ class PhoenixBaselineTrial(TFKerasTrial):
             padded_shapes=([None, 224, 224, 3], [None]),
         )
 
-        return validation_dataset
+        return self.context.wrap_dataset(validation_dataset)

@@ -57,7 +57,8 @@ class BaselineModel(tf.keras.Model):
 
         gradients = tape.gradient(loss, trainable_variables)
 
-        self.optimizer.apply_gradients(zip(gradients, trainable_variables))
+        aggregated_gradients = self.optimizer._aggregate_gradients(zip(gradients, trainable_variables))
+        self.optimizer.apply_gradients(zip(aggregated_gradients, trainable_variables))
 
         # Update metrics (includes the metric that tracks the loss)
         self.compiled_metrics.update_state(targets[:, 1:], tf.stack(all_preds, axis=1))

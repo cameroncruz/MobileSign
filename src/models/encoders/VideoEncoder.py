@@ -9,7 +9,7 @@ class VideoEncoder(tf.keras.Model):
         self.temporal_stride = temporal_stride
         self.embedding_dim = embedding_dim
         self.frame_encoder = tf.keras.applications.MobileNetV2(
-            include_top=False, pooling="avg"
+            include_top=False, pooling="avg", weights=None
         )
         self.frame_encoder.trainable = False
         self.clip_encoder = tf.keras.layers.TimeDistributed(self.frame_encoder)

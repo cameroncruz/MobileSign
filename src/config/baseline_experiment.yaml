@@ -16,7 +16,7 @@ data_layer:
   bucket: mobilesign-bucket
   bucket_directory_path: cache
 hyperparameters:
-  global_batch_size: 16
+  global_batch_size: 8
   vocab_size: 980
   window_size: 8
   temporal_stride: 8
