@@ -22,4 +22,5 @@ for row in phoenix_df[["folder", "annotation"]].values:
     st.write(folder)
     st.write(annotation)
     frames = glob(DATA_ROOT + "features/fullFrame-210x260px/" + folder)
+    frames = sorted(frames)
     st.image(frames[:12], width=100)

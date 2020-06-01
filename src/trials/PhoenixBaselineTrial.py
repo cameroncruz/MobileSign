@@ -4,7 +4,7 @@ import tensorflow as tf
 from determined.keras import (TFKerasTensorBoard, TFKerasTrial,
                               TFKerasTrialContext)
 from models.BaselineModel import BaselineModel
-from utils.dataloader import create_parse_fn, frame_sampling_fn
+from utils.dataloader import create_parse_fn, create_frame_sampling_fn
 from utils.metrics import WER
 
 
@@ -35,7 +35,7 @@ class PhoenixBaselineTrial(TFKerasTrial):
 
     def keras_callbacks(self) -> List[tf.keras.callbacks.Callback]:
         return [
-            TFKerasTensorBoard(update_freq="batch", profile_batch=0, histogram_freq=1)
+            TFKerasTensorBoard(update_freq="batch", histogram_freq=1)
         ]
 
     def build_training_data_loader(self) -> tf.data.Dataset:
@@ -59,7 +59,7 @@ class PhoenixBaselineTrial(TFKerasTrial):
 
         train_dataset = make_dataset()
 
-        train_dataset = train_dataset.map(frame_sampling_fn)
+        train_dataset = train_dataset.map(create_frame_sampling_fn(self.context.get_hparam("frame_sampling_stride")))
         train_dataset = train_dataset.padded_batch(
             self.context.get_per_slot_batch_size(),
             padded_shapes=([None, 224, 224, 3], [None]),
@@ -88,7 +88,7 @@ class PhoenixBaselineTrial(TFKerasTrial):
 
         validation_dataset = make_dataset()
 
-        validation_dataset = validation_dataset.map(frame_sampling_fn)
+        validation_dataset = validation_dataset.map(create_frame_sampling_fn(self.context.get_hparam("frame_sampling_stride")))
         validation_dataset = validation_dataset.padded_batch(
             self.context.get_per_slot_batch_size(),
             padded_shapes=([None, 224, 224, 3], [None]),
