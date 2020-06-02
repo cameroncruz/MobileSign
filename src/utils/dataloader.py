@@ -104,7 +104,6 @@ def create_tokenize_fn(
 
 
 def create_frame_sampling_fn(stride):
-
     def frame_sampling_fn(frames, label):
         return frames[::stride, :, :, :], label
 

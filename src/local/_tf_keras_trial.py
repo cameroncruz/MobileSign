@@ -16,7 +16,9 @@ import tensorflow as tf
 from packaging import version
 from tensorflow.keras.models import Model
 from tensorflow.python.keras.callbacks import make_logs
-from tensorflow.python.keras.saving.hdf5_format import load_optimizer_weights_from_hdf5_group
+from tensorflow.python.keras.saving.hdf5_format import (
+    load_optimizer_weights_from_hdf5_group,
+)
 from tensorflow.python.keras.utils.mode_keys import ModeKeys
 
 import determined as det
@@ -37,7 +39,9 @@ def load_optimizer_weights(model: Model, load_path: pathlib.Path) -> None:
     f = h5py.File(str(load_path), mode="r")
     if "optimizer_weights" in f:
         tf2_2_or_newer = version.parse(tf.__version__) >= version.parse("2.2.0")
-        if model._is_graph_network or tf2_2_or_newer:  # pylint: disable=protected-access
+        if (
+            model._is_graph_network or tf2_2_or_newer
+        ):  # pylint: disable=protected-access
             if tf2_2_or_newer:
                 try:
                     model.optimizer._create_all_weights(model.trainable_variables)
@@ -93,7 +97,9 @@ class WaitForInstructionsCallback(tf.keras.callbacks.Callback):  # type: ignore
 
         # Remove default keras metrics we aren't interested in like "batch" and
         # "size".
-        self.metrics.append({k: v for k, v in logs.items() if k not in {"batch", "size"}})
+        self.metrics.append(
+            {k: v for k, v in logs.items() if k not in {"batch", "size"}}
+        )
         self.batches_processed += 1
         if self.batches_processed != self.tf_keras_trial_controller.batches_per_step:
             return
@@ -124,7 +130,9 @@ class WaitForInstructionsCallback(tf.keras.callbacks.Callback):  # type: ignore
 
         self.tf_keras_trial_controller.run()
 
-        if self.model.stop_training and version.parse(tf.__version__) >= version.parse("2.2.0"):
+        if self.model.stop_training and version.parse(tf.__version__) >= version.parse(
+            "2.2.0"
+        ):
             # Starting with TF 2.2, `model.stop_training` is only checked at the end of epochs.
             raise det.errors.WorkerFinishedGracefully
 
@@ -173,7 +181,10 @@ class DeterminedProfiler(tf.keras.callbacks.Callback):  # type: ignore
             if self._should_profile():
                 self._profile_file = cast(TextIO, self._profile_file)
                 profile.log_end(
-                    "batch", self._profile_file, self._train_batch_start_time, batch=batch
+                    "batch",
+                    self._profile_file,
+                    self._train_batch_start_time,
+                    batch=batch,
                 )
             self._count = (self._count + 1) % self._profile_frequency
 
@@ -192,9 +203,10 @@ class TFKerasTrialController(det.LoopTrialController):
         self.model = model
         self.session = session
 
-        self._train_input_manager, self._validation_input_manager = keras._init_input_managers(
-            context=self.context, train_config=train_config
-        )
+        (
+            self._train_input_manager,
+            self._validation_input_manager,
+        ) = keras._init_input_managers(context=self.context, train_config=train_config)
 
         # If callbacks are set to None, then use an empty list.
         self.tf_keras_callbacks = train_config.callbacks or []
@@ -221,7 +233,9 @@ class TFKerasTrialController(det.LoopTrialController):
             if hvd_config.use:
                 # We launch a horovod process per GPU. Each process
                 # needs to bind to a unique GPU.
-                session_config.gpu_options.visible_device_list = str(env.slot_ids[hvd.local_rank()])
+                session_config.gpu_options.visible_device_list = str(
+                    env.slot_ids[hvd.local_rank()]
+                )
 
             session = tf.compat.v1.Session(
                 graph=tf.compat.v1.get_default_graph(), config=session_config
@@ -242,7 +256,9 @@ class TFKerasTrialController(det.LoopTrialController):
             return None
 
     @staticmethod
-    def pre_execute_hook(env: det.EnvContext, hvd_config: horovod.HorovodContext) -> None:
+    def pre_execute_hook(
+        env: det.EnvContext, hvd_config: horovod.HorovodContext
+    ) -> None:
         # Initialize the correct horovod.
         if hvd_config.use:
             hvd.require_horovod_type("tensorflow.keras", "TFKerasTrial is in use.")
@@ -277,16 +293,26 @@ class TFKerasTrialController(det.LoopTrialController):
         hvd_config: horovod.HorovodContext,
     ) -> det.TrialController:
         check.is_instance(
-            context, keras.TFKerasTrialContext, "TFKerasTrialController needs a TFKerasTrialContext"
+            context,
+            keras.TFKerasTrialContext,
+            "TFKerasTrialController needs a TFKerasTrialContext",
         )
         context = cast(keras.TFKerasTrialContext, context)
 
-        check.is_instance(trial_inst, TFKerasTrial, "TFKerasTrialController needs a TFKerasTrial")
+        check.is_instance(
+            trial_inst, TFKerasTrial, "TFKerasTrialController needs a TFKerasTrial"
+        )
         trial = cast(TFKerasTrial, trial_inst)
 
-        session = TFKerasTrialController._configure_session(env, hvd_config, trial.session_config())
+        session = TFKerasTrialController._configure_session(
+            env, hvd_config, trial.session_config()
+        )
 
-        training_x, training_y, training_sample_weight = keras._get_x_y_and_sample_weight(
+        (
+            training_x,
+            training_y,
+            training_sample_weight,
+        ) = keras._get_x_y_and_sample_weight(
             input_data=trial.build_training_data_loader()
         )
         training_data = keras._adapt_keras_data(
@@ -334,7 +360,9 @@ class TFKerasTrialController(det.LoopTrialController):
                 "TensorFlow calls `optimizer.get_gradients()` to compute gradients."
             )
             context.model.compile(
-                *compile_args.args, **compile_args.kwargs, experimental_run_tf_function=False
+                *compile_args.args,
+                **compile_args.kwargs,
+                experimental_run_tf_function=False,
             )
         else:
             context.model.compile(*compile_args.args, **compile_args.kwargs)
@@ -344,7 +372,9 @@ class TFKerasTrialController(det.LoopTrialController):
         return TFKerasTrialController(
             context.model,
             session,
-            keras.TFKerasTrainConfig(training_data, validation_data, tf_keras_callbacks),
+            keras.TFKerasTrainConfig(
+                training_data, validation_data, tf_keras_callbacks
+            ),
             context,
             env,
             workloads,
@@ -373,7 +403,8 @@ class TFKerasTrialController(det.LoopTrialController):
 
         check.is_not_none(context.compile_args, "Please call model.compile(...).")
         check.is_not_none(
-            context.train_config, "Please call model.fit(...) or model.fit_generator(...)."
+            context.train_config,
+            "Please call model.fit(...) or model.fit_generator(...).",
         )
 
         # For the Native API, we would break the user's model if we changed the session
@@ -434,7 +465,6 @@ class TFKerasTrialController(det.LoopTrialController):
         # Note: loading model from `saved_model` format doesn't currently work.
         self.model.load_weights(str(full_ckpt_path))
         load_optimizer_weights(self.model, full_ckpt_path)
-
 
     def _save_checkpoint(self, path: pathlib.Path) -> workload.Response:
         # We assume that at least one training step has completed when saving a
@@ -511,13 +541,17 @@ class TFKerasTrialController(det.LoopTrialController):
         profile_frequency = self.env.experiment_config.profile_frequency()
         if profile_frequency:
             self.tf_keras_callbacks.append(
-                DeterminedProfiler(profile_frequency, DeterminedProfiler.OUTPUT_FILENAME)
+                DeterminedProfiler(
+                    profile_frequency, DeterminedProfiler.OUTPUT_FILENAME
+                )
             )
 
         if self.hvd_config.use:
             # When using horovod broadcast initial variable states from rank 0 to
             # all other processes.
-            self.tf_keras_callbacks.append(hvd.callbacks.BroadcastGlobalVariablesCallback(0))
+            self.tf_keras_callbacks.append(
+                hvd.callbacks.BroadcastGlobalVariablesCallback(0)
+            )
 
         (
             training_input,
@@ -541,7 +575,9 @@ class TFKerasTrialController(det.LoopTrialController):
             validation_steps,
         ) = self._validation_input_manager.get_validation_input_and_num_batches()
 
-        metrics_values = self.model.evaluate(validation_data, steps=validation_steps, verbose=0)
+        metrics_values = self.model.evaluate(
+            validation_data, steps=validation_steps, verbose=0
+        )
 
         # If the model was compiled with metrics=None, metrics_value will be a single value.
         if not isinstance(metrics_values, (tuple, list)):
@@ -551,12 +587,16 @@ class TFKerasTrialController(det.LoopTrialController):
             for index, metric_value in enumerate(metrics_values):
                 metrics_values[index] = np.array(hvd.allreduce(metric_value))
 
-        num_inputs = self._validation_input_manager.stop_validation_input_and_get_num_inputs()
+        num_inputs = (
+            self._validation_input_manager.stop_validation_input_and_get_num_inputs()
+        )
 
         if not self.is_chief:
             return workload.Skipped()
 
-        metrics = make_logs(self.model, {}, metrics_values, ModeKeys.TEST, prefix="val_")
+        metrics = make_logs(
+            self.model, {}, metrics_values, ModeKeys.TEST, prefix="val_"
+        )
         check.gt(len(metrics), 0)
 
         return {"num_inputs": num_inputs, "validation_metrics": metrics}
