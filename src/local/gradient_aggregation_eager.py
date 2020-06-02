@@ -1,13 +1,16 @@
 import functools
 import os
-import tensorflow as tf
 from distutils import util
+
+import tensorflow as tf
 from packaging import version
 
 
 def tf_function_before_tf_2_2(func):
-    if version.parse(tf.__version__) < version.parse("2.2.0") \
-            or util.strtobool(os.getenv("ENABLE_TF_FUNCTION_FOR_ALLREDUCE", "False")):
+    if version.parse(tf.__version__) < version.parse("2.2.0") or util.strtobool(
+        os.getenv("ENABLE_TF_FUNCTION_FOR_ALLREDUCE", "False")
+    ):
+
         @functools.wraps(func)
         @tf.function
         def wrapper(*args, **kwargs):
@@ -16,6 +19,7 @@ def tf_function_before_tf_2_2(func):
         return wrapper
 
     else:
+
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             return func(*args, **kwargs)

@@ -9,7 +9,9 @@ class VideoEncoder(tf.keras.Model):
         self.temporal_stride = temporal_stride
         self.embedding_dim = embedding_dim
         self.frame_encoder = tf.keras.applications.MobileNetV2(
-            include_top=False, pooling="avg", weights="/run/determined/workdir/mobilenetv2_pretrained.h5"
+            include_top=False,
+            pooling="avg",
+            weights="/run/determined/workdir/mobilenetv2_pretrained.h5",
         )
         self.frame_encoder.trainable = False
         self.clip_encoder = tf.keras.layers.TimeDistributed(self.frame_encoder)
@@ -29,11 +31,18 @@ class VideoEncoder(tf.keras.Model):
         batch_size, n_frames, H, W, C = inputs.shape
 
         if n_frames < self.window_size:
-            inputs = tf.pad(inputs, tf.constant([[0, 0], [0, self.window_size - n_frames], [0, 0], [0, 0], [0, 0]]))
+            inputs = tf.pad(
+                inputs,
+                tf.constant(
+                    [[0, 0], [0, self.window_size - n_frames], [0, 0], [0, 0], [0, 0]]
+                ),
+            )
 
         clip_embeddings = [
             self.embed_clip(inputs[:, i : i + self.window_size, :, :, :])
-            for i in range(0, max(n_frames - self.window_size, 0) + 1, self.temporal_stride)
+            for i in range(
+                0, max(n_frames - self.window_size, 0) + 1, self.temporal_stride
+            )
         ]
         clip_embeddings = tf.stack(clip_embeddings, axis=1)
 
