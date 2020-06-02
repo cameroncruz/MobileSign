@@ -18,7 +18,6 @@ docker run \
                 --log-opt awslogs-stream=determined-master \
                 -p 8080:8080 \
                 -v `pwd`/determined_master.yaml:/etc/determined/master.yaml \
-                -v `pwd`/agent_starttup.sh:/etc/determined/agent_startup.sh \
-                determinedai/determined-master:0.12.4
+                determinedai/determined-master:0.12.5
 
-det experiment create config/baseline_experiment.yaml trials
+det experiment create config/baseline_experiment.yaml .

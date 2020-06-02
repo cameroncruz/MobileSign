@@ -47,6 +47,7 @@ def read_frames(features_path: str, folder: str) -> (tf.float32, tf.int32):
     frame_files = tf.io.gfile.glob(
         tf.strings.join([features_path, folder]).numpy().decode("utf-8")
     )
+    frame_files = sorted(frame_files)
     num_frames = len(frame_files)
 
     frames = tf.stack(
@@ -102,5 +103,8 @@ def create_tokenize_fn(
     return tokenize
 
 
-def frame_sampling_fn(frames, label):
-    return frames[:32, :, :, :], label
+def create_frame_sampling_fn(stride):
+    def frame_sampling_fn(frames, label):
+        return frames[::stride, :, :, :], label
+
+    return frame_sampling_fn

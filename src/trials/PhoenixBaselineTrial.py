@@ -4,7 +4,7 @@ import tensorflow as tf
 from determined.keras import (TFKerasTensorBoard, TFKerasTrial,
                               TFKerasTrialContext)
 from models.BaselineModel import BaselineModel
-from utils.dataloader import create_parse_fn, frame_sampling_fn
+from utils.dataloader import create_frame_sampling_fn, create_parse_fn
 from utils.metrics import WER
 
 
@@ -34,14 +34,12 @@ class PhoenixBaselineTrial(TFKerasTrial):
         return model
 
     def keras_callbacks(self) -> List[tf.keras.callbacks.Callback]:
-        return [
-            TFKerasTensorBoard(update_freq="batch", profile_batch=0, histogram_freq=1)
-        ]
+        return [TFKerasTensorBoard(update_freq="batch", histogram_freq=1)]
 
     def build_training_data_loader(self) -> tf.data.Dataset:
-        @self.context.experimental.cache_train_dataset(
-            "rwth-phoenix-2014-tfdataset", "v1", shuffle=True
-        )
+        # @self.context.experimental.cache_train_dataset(
+        #     "rwth-phoenix-2014-tfdataset", "v1", shuffle=True
+        # )
         def make_dataset() -> tf.data.Dataset:
             dataset = tf.data.experimental.CsvDataset(
                 filenames=self.data_config["train_csv"],
@@ -59,18 +57,20 @@ class PhoenixBaselineTrial(TFKerasTrial):
 
         train_dataset = make_dataset()
 
-        train_dataset = train_dataset.map(frame_sampling_fn)
+        train_dataset = train_dataset.map(
+            create_frame_sampling_fn(self.context.get_hparam("frame_sampling_stride"))
+        )
         train_dataset = train_dataset.padded_batch(
             self.context.get_per_slot_batch_size(),
             padded_shapes=([None, 224, 224, 3], [None]),
         )
 
-        return train_dataset
+        return self.context.wrap_dataset(train_dataset)
 
     def build_validation_data_loader(self) -> tf.data.Dataset:
-        @self.context.experimental.cache_validation_dataset(
-            "rwth-phoenix-2014-tfdataset", "v1"
-        )
+        # @self.context.experimental.cache_validation_dataset(
+        #     "rwth-phoenix-2014-tfdataset", "v1"
+        # )
         def make_dataset() -> tf.data.Dataset:
             dataset = tf.data.experimental.CsvDataset(
                 filenames=self.data_config["validation_csv"],
@@ -88,10 +88,12 @@ class PhoenixBaselineTrial(TFKerasTrial):
 
         validation_dataset = make_dataset()
 
-        validation_dataset = validation_dataset.map(frame_sampling_fn)
+        validation_dataset = validation_dataset.map(
+            create_frame_sampling_fn(self.context.get_hparam("frame_sampling_stride"))
+        )
         validation_dataset = validation_dataset.padded_batch(
             self.context.get_per_slot_batch_size(),
             padded_shapes=([None, 224, 224, 3], [None]),
         )
 
-        return validation_dataset
+        return self.context.wrap_dataset(validation_dataset)
