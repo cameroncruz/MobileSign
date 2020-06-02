@@ -1,7 +1,8 @@
 import functools
 import os
-import tensorflow as tf
 from distutils import util
+
+import tensorflow as tf
 from packaging import version
 
 

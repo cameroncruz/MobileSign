@@ -10,21 +10,19 @@ import sys
 from abc import abstractmethod
 from typing import Any, Dict, List, Optional, TextIO, cast
 
+import determined as det
 import h5py
 import numpy as np
 import tensorflow as tf
-from packaging import version
-from tensorflow.keras.models import Model
-from tensorflow.python.keras.callbacks import make_logs
-from tensorflow.python.keras.saving.hdf5_format import (
-    load_optimizer_weights_from_hdf5_group,
-)
-from tensorflow.python.keras.utils.mode_keys import ModeKeys
-
-import determined as det
 from determined import horovod, keras, profile, workload
 from determined.horovod import hvd
 from determined_common import check
+from packaging import version
+from tensorflow.keras.models import Model
+from tensorflow.python.keras.callbacks import make_logs
+from tensorflow.python.keras.saving.hdf5_format import \
+    load_optimizer_weights_from_hdf5_group
+from tensorflow.python.keras.utils.mode_keys import ModeKeys
 
 IMPOSSIBLY_LARGE_EPOCHS = sys.maxsize
 
