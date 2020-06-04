@@ -19,8 +19,10 @@ class TSMLayer(tf.keras.layers.Layer):
 
         out = tf.Variable(tf.zeros_like(x))
         out[:, :, :-1, :fold].assign(x[:, :, 1:, :fold])  # shift left
-        out[:, :, 1:, fold: 2 * fold].assign(x[:, :, :-1, fold: 2 * fold])  # shift right
-        out[:, :, :, 2 * fold:].assign(x[:, :, :, 2 * fold:])  # not shift
+        out[:, :, 1:, fold : 2 * fold].assign(
+            x[:, :, :-1, fold : 2 * fold]
+        )  # shift right
+        out[:, :, :, 2 * fold :].assign(x[:, :, :, 2 * fold :])  # not shift
 
         out = tf.reshape(out, shape=(batch_size, n_frames, c, h, w))
 

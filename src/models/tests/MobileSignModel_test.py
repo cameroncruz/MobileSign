@@ -33,11 +33,13 @@ class MobileSignModelTest(tf.test.TestCase):
         dataset = dataset.map(slice_fn)
         dataset = dataset.padded_batch(2, padded_shapes=([None, 224, 224, 3], [None]))
 
-        model = MobileSignModel(vocab_size=980, weights_path="mobilenetv2_pretrained.h5")
+        model = MobileSignModel(
+            vocab_size=980, weights_path="mobilenetv2_pretrained.h5"
+        )
         model.compile(
             optimizer="adam",
             loss=tf.keras.losses.SparseCategoricalCrossentropy(),
             metrics=[WER(), tf.keras.metrics.SparseCategoricalAccuracy()],
         )
-        tf.saved_model.save(model, export_dir='../debug_data')
+        tf.saved_model.save(model, export_dir="../debug_data")
         # model.fit(dataset, validation_data=dataset, epochs=100)

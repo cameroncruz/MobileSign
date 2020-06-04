@@ -10,14 +10,17 @@ class TSMEncoder(tf.keras.Model):
         self.temporal_stride = temporal_stride
 
         # TODO: For some reason gradients aren't being calculated for these during training?
-        base, block_13_14, block_15, block_16, block_final = get_submodels_mobilenetv2(weights=weights_path)
+        base, block_13_14, block_15, block_16, block_final = get_submodels_mobilenetv2(
+            weights=weights_path
+        )
 
         self.base = tf.keras.layers.TimeDistributed(base)
 
         self.block_13_14 = tf.keras.layers.TimeDistributed(block_13_14)
         self.tsm_13_14 = TSMLayer()
         self.downsample_13_14 = tf.keras.layers.TimeDistributed(
-            tf.keras.layers.Conv2D(filters=160, kernel_size=1, strides=2))
+            tf.keras.layers.Conv2D(filters=160, kernel_size=1, strides=2)
+        )
         self.add_13_14 = tf.keras.layers.Add()
 
         self.block_15 = tf.keras.layers.TimeDistributed(block_15)
@@ -27,7 +30,8 @@ class TSMEncoder(tf.keras.Model):
         self.block_16 = tf.keras.layers.TimeDistributed(block_16)
         self.tsm_16 = TSMLayer()
         self.increase_dims_16 = tf.keras.layers.TimeDistributed(
-            tf.keras.layers.Conv2D(filters=320, kernel_size=1, strides=1))
+            tf.keras.layers.Conv2D(filters=320, kernel_size=1, strides=1)
+        )
         self.add_16 = tf.keras.layers.Add()
 
         self.block_final = tf.keras.layers.TimeDistributed(block_final)
@@ -60,7 +64,7 @@ class TSMEncoder(tf.keras.Model):
             )
 
         clip_embeddings = [
-            self.embed_clip(inputs[:, i: i + self.window_size, :, :, :])
+            self.embed_clip(inputs[:, i : i + self.window_size, :, :, :])
             for i in range(
                 0, max(n_frames - self.window_size, 0) + 1, self.temporal_stride
             )
