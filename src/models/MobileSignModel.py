@@ -20,7 +20,7 @@ class MobileSignModel(tf.keras.Model):
         self.tsm_encoder = TSMEncoder(
             window_size=window_size,
             temporal_stride=temporal_stride,
-            weights_path=weights_path
+            weights_path=weights_path,
         )
 
         self.temporal_encoder = TemporalEncoder(hidden_size=hidden_size)
