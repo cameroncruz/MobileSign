@@ -1,0 +1,36 @@
+description: phoenix_mobilesign
+environment:
+  image:
+    gpu: "determinedai/environments:cuda-10.1-pytorch-1.4-tf-2.2-gpu-0.4.0"
+data:
+  train_csv: /mnt/efs/phoenix2014-release/phoenix-2014-multisigner/annotations/manual/train.corpus.csv
+  validation_csv: /mnt/efs/phoenix2014-release/phoenix-2014-multisigner/annotations/manual/dev.corpus.csv
+  features_path: /mnt/efs/phoenix2014-release/phoenix-2014-multisigner/features/fullFrame-210x260px/
+  vocab_file: /mnt/efs/phoenix2014-release/phoenix-tokenizer.json
+  weights_path: /run/determined/workdir/mobilenetv2_pretrained.h5
+bind_mounts:
+  - host_path: /mnt/efs
+    container_path: /mnt/efs
+    read_only: true
+data_layer:
+  type: s3
+  bucket: mobilesign-bucket
+  bucket_directory_path: cache
+hyperparameters:
+  global_batch_size: 4
+  vocab_size: 980
+  frame_sampling_stride: 4
+  window_size: 8
+  temporal_stride: 8
+  embedding_dim: 100
+  hidden_size: 512
+resources:
+  max_slots: 4
+  slots_per_trial: 4
+searcher:
+  name: single
+  metric: val_loss
+  smaller_is_better: true
+  max_steps: 50
+min_validation_period: 10
+entrypoint: trials.PhoenixMobileSignTrial:PhoenixMobileSignTrial
