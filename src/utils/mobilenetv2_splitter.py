@@ -1,5 +1,6 @@
-import tensorflow as tf
 from typing import Tuple
+
+import tensorflow as tf
 
 
 def get_submodels_mobilenetv2(weights="imagenet"):

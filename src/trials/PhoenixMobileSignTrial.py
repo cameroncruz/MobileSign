@@ -1,7 +1,8 @@
 from typing import List
 
 import tensorflow as tf
-from determined.keras import TFKerasTensorBoard, TFKerasTrial, TFKerasTrialContext
+from determined.keras import (TFKerasTensorBoard, TFKerasTrial,
+                              TFKerasTrialContext)
 from models.MobileSignModel import MobileSignModel
 from utils.dataloader import create_frame_sampling_fn, create_parse_fn
 from utils.metrics import WER
